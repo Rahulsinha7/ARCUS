@@ -12,7 +12,7 @@ const videoRouter=require('./routes/videoCreator');
 const cors=require('cors');
 
 app.use(cors({
-    origin:'http://localhost:5173',
+    origin:'https://stirring-phoenix-09c593.netlify.app',
     credentials:true
 }))
 
