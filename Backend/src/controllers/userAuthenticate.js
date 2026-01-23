@@ -10,20 +10,19 @@ const Submission=require('../models/submission');
 const register=async (req,res)=>{
 
     try{
-     //validate the data 
+    
      validate(req.body);
 
         const{firstName,emailId,password}=req.body;
  
-        //check if user already exists
-        //const ans=User.exists({emailId});
+     
 
         req.body.password=await bcrypt.hash(password,10);
         req.body.role='user'; //they always register as user
 
       
 
-       const user= await User.create(req.body);  //already check if user already exist or not
+       const user= await User.create(req.body);  
        
        const token=  jwt.sign({_id:user._id,emailId:emailId,role:'user'},process.env.JWT_KEY,{expiresIn:60*60});
         const reply={
@@ -32,7 +31,7 @@ const register=async (req,res)=>{
         _id:user._id
        }
 
-       res.cookie('token',token,{maxAge:60*60*1000});
+       res.cookie('token',token,{ httpOnly: true, secure: true, sameSite: "None", maxAge: 60 * 60 * 1000});
     //    res.status(201).send("User Registered Successfully")
         res.status(201).json({
         user:reply,
@@ -72,7 +71,7 @@ const login=async(req,res)=> {
        }
 
        const token=  jwt.sign({_id:user._id,emailId:emailId,role:user.role},process.env.JWT_KEY,{expiresIn:60*60});
-       res.cookie('token',token,{maxAge:60*60*1000});
+       res.cookie('token',token,{ httpOnly: true,secure: true, sameSite: "None",maxAge: 60 * 60 * 1000});
     //    res.status(200).send("Logged in Successfully");
     res.status(201).json({
         user:reply,
@@ -94,8 +93,7 @@ const logout=async(req,res)=>{
         await redisClient.set(`token: ${token}`,'Blocked');
         await redisClient.expireAt(`token: ${token}`,payload.exp);
 
-        //token add kar dunga redis ke blocklist mein
-        //clear cookies
+       
 
         res.cookie("token",null,{expires:new Date(Date.now())});
         res.status(503).send("Logged Out Successfully");
@@ -123,7 +121,7 @@ const adminRegister=async(req,res)=>{
 
        const user= await User.create(req.body);  //already check if user already exist or not
        const token=  jwt.sign({_id:user._id,emailId:emailId,role:'admin'},process.env.JWT_KEY,{expiresIn:60*60});
-       res.cookie('token',token,{maxAge:60*60*1000});
+       res.cookie('token',token,{ httpOnly: true, secure: true,sameSite: "None", maxAge: 60 * 60 * 1000});
        res.status(201).send("User Registered Successfully")
 
     }
