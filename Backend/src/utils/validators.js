@@ -10,8 +10,8 @@ const validate=(data)=>{
 
         if(!validator.isEmail(data.emailId))
             throw new Error("Email is not valid");
-        if(!validator.isStrongPassword(data.password))
-            throw new Error("Password is not strong enough");
+      
+}
     
 
 }
