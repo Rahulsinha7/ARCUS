@@ -11,8 +11,8 @@ const validate=(data)=>{
         if(!validator.isEmail(data.emailId))
             throw new Error("Email is not valid");
       
-}
+};
     
 
-}
+
 module.exports=validate;  
